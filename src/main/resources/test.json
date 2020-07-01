@@ -1,0 +1,19 @@
+[
+    {
+      "tag": "forge:nuggets/iron",
+      "prefer": "minecraft:iron_nugget",
+      "except": ["minecraft:iron_nugget"]
+    },
+    {
+      "tag": "forge:ingots/gold",
+      "prefer": "minecraft:gold_ingot"
+    },
+    {
+      "tag": "forge:ingots/copper",
+      "prefer": "mekanism:copper"
+    },
+    {
+      "tag": "forge:ingots/tin",
+      "prefer": "mekanism:tin"
+    }
+]

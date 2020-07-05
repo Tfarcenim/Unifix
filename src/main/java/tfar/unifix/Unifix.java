@@ -21,7 +21,7 @@ public class Unifix {
 
 	public static final String MODID = "unifix";
 
-	private static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger();
 
 	public Unifix() {}
 

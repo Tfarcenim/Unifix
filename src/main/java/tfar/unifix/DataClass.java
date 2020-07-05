@@ -18,8 +18,6 @@ public class DataClass {
 	}
 
 	public boolean matches(ItemStack stack) {
-		if (stack.getItem().isIn(tag))
-			if (!except.contains(stack.getItem())) return true;
-		return false;
+		return stack.getItem().isIn(tag) && !except.contains(stack.getItem());
 	}
 }

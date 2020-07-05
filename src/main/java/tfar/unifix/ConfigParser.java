@@ -4,6 +4,7 @@ import com.google.gson.*;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -30,7 +31,6 @@ public class ConfigParser {
 	}
 
 	private static void writeDefaultConfig() {
-
 		Path path = Paths.get("config/");
 		if (!Files.isDirectory(path))
 			try {
@@ -41,25 +41,29 @@ public class ConfigParser {
 
 		if (configFile.exists()) return;
 		try {
+			Unifix.LOGGER.info("writing default unifications");
 			JsonArray jsonArray = new JsonArray();
-			defaults.stream().map(ResourceLocation::new)
-							.map(ItemTags.getCollection()::get)
-							.filter(Objects::nonNull)
-							.map(Tag::getAllElements)
-							.filter(col -> !col.isEmpty())
-							.map(Collection::iterator)
-							.map(Iterator::next)
-							.map(ForgeRegistryEntry::getRegistryName)
-							.map(ResourceLocation::toString)
-							.forEach(itemName -> {
-								JsonObject jsonObject = new JsonObject();
-								jsonObject.addProperty("tag", itemName);
-								jsonObject.addProperty("prefer", itemName);
-								JsonArray exclusion = new JsonArray();
-								exclusion.add(itemName);
-								jsonObject.add("exclude", exclusion);
-								jsonArray.add(jsonObject);
-							});
+			TagCollection<Item> itemTagCollection = ItemTags.getCollection();
+			for (String s : defaults) {
+				ResourceLocation resourceLocation = new ResourceLocation(s);
+				Tag<Item> itemTag = itemTagCollection.get(resourceLocation);
+				if (itemTag != null) {
+					Collection<Item> col = itemTag.getAllElements();
+					if (!col.isEmpty()) {
+						Iterator<Item> iterator = col.iterator();
+						Item next = iterator.next();
+						ResourceLocation registryName = next.getRegistryName();
+						String itemName = registryName.toString();
+						JsonObject jsonObject = new JsonObject();
+						jsonObject.addProperty("tag", s);
+						jsonObject.addProperty("prefer", itemName);
+						JsonArray exclusion = new JsonArray();
+						exclusion.add(itemName);
+						jsonObject.add("exclude", exclusion);
+						jsonArray.add(jsonObject);
+					}
+				}
+			}
 			FileWriter writer = new FileWriter(configFile);
 			writer.write(g.toJson(jsonArray));
 			writer.flush();

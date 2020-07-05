@@ -24,6 +24,7 @@ public class RecipeManagerMixin {
 
 	@Inject(method = "apply",at = @At("RETURN"))
 	private void unidictv2(Map<ResourceLocation, JsonObject> splashList, IResourceManager resourceManagerIn, IProfiler profilerIn, CallbackInfo ci){
+		Unifix.LOGGER.info("parsing unifications");
 		recipes = new HashMap<>(recipes);
 		ConfigParser.handleConfig();
 		recipes.put(IRecipeType.CRAFTING,new HashMap<>(recipes.get(IRecipeType.CRAFTING)));
